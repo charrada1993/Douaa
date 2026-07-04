@@ -22,57 +22,60 @@ if not firebase_creds_env:
 if not db_url:
     print("WARNING: FIREBASE_DB_URL is not set. App might fail on Firebase DB actions.")
 
+import re
+
 firebase_initialized = False
 if firebase_creds_env and db_url:
     try:
         # Check if the env var contains a JSON string
         if firebase_creds_env.strip().startswith("{"):
+            # ── Step 1: try to parse as-is ──────────────────────────────────
             try:
                 creds_dict = json.loads(firebase_creds_env)
-            except Exception as json_err:
-                print(f"Warning: Standard JSON load failed ({json_err}). Attempting sanitization and regex extraction fallback...")
+            except Exception:
+                # ── Step 2: the private_key may contain raw newlines (not \n)
+                # which makes the JSON invalid.  Replace them only *inside*
+                # the private_key value, then try again.
+                def _fix_private_key_newlines(raw: str) -> str:
+                    """
+                    Replace raw (unescaped) newlines that appear inside the
+                    private_key string value with the JSON escape sequence \\n.
+                    """
+                    # Find the private_key value between its surrounding quotes
+                    m = re.search(r'"private_key"\s*:\s*"([\s\S]*?)",\s*"client_email"', raw)
+                    if m:
+                        original_val = m.group(1)
+                        # Replace literal newlines with \n (JSON-safe)
+                        fixed_val = original_val.replace('\n', '\\n').replace('\r', '')
+                        raw = raw[:m.start(1)] + fixed_val + raw[m.end(1):]
+                    return raw
+
                 try:
-                    # Clean up: replace literal newlines with escaped newlines
-                    sanitized = firebase_creds_env.replace('\n', '\\n').replace('\r', '')
-                    if sanitized.startswith('{\\n'):
-                        sanitized = '{' + sanitized[3:]
-                    if sanitized.endswith('\\n}'):
-                        sanitized = sanitized[:-3] + '}'
-                    creds_dict = json.loads(sanitized)
+                    fixed = _fix_private_key_newlines(firebase_creds_env)
+                    creds_dict = json.loads(fixed)
                 except Exception:
-                    # Bulletproof fallback: manually parse key fields using regex
-                    import re
-                    creds_dict = {}
-                    # Essential fields needed by credentials.Certificate
-                    fields = [
-                        "type", "project_id", "private_key_id", "private_key", 
-                        "client_email", "client_id", "auth_uri", "token_uri", 
-                        "auth_provider_x509_cert_url", "client_x509_cert_url", "universe_domain"
-                    ]
-                    for field in fields:
-                        # Match double-quoted key and value
-                        # We use ([^"]*?)(?<!\\) to handle escaped characters like \" inside values if any,
-                        # but for service accounts it's simple.
-                        match = re.search(f'"{field}"\s*:\s*"([^"]+)"', firebase_creds_env)
-                        if match:
-                            val = match.group(1)
-                            if field == "private_key":
-                                # Convert escaped \n back to actual newlines
-                                val = val.replace('\\n', '\n').replace('\\\\n', '\n')
-                            creds_dict[field] = val
-                    
-                    if not creds_dict.get("private_key") or not creds_dict.get("project_id"):
-                        raise ValueError("Failed to extract critical fields (private_key/project_id) from credentials environment variable.")
-            
+                    # ── Step 3: strip ALL literal newlines from the whole
+                    # string (they should all be \n-encoded in valid JSON)
+                    cleaned = firebase_creds_env.replace('\r\n', '\\n') \
+                                                .replace('\r', '\\n') \
+                                                .replace('\n', '\\n')
+                    creds_dict = json.loads(cleaned)
+
+            # ── After parsing: ensure private_key has real newlines ─────────
+            # json.loads should give us real \n chars, but some envs deliver
+            # the literal two-char sequence  \  n  instead.
+            pk = creds_dict.get("private_key", "")
+            if "\\n" in pk and "\n" not in pk:
+                creds_dict["private_key"] = pk.replace("\\n", "\n")
+
             cred = credentials.Certificate(creds_dict)
         else:
-            # Otherwise, treat it as a path to the credentials JSON file
-            # Resolve relative path to make it absolute based on app's directory
+            # Otherwise treat as a path to the credentials JSON file
             if not os.path.isabs(firebase_creds_env):
                 base_dir = os.path.dirname(os.path.abspath(__file__))
                 firebase_creds_env = os.path.join(base_dir, firebase_creds_env)
             cred = credentials.Certificate(firebase_creds_env)
-            
+
         firebase_admin.initialize_app(cred, {
             'databaseURL': db_url
         })
@@ -80,6 +83,7 @@ if firebase_creds_env and db_url:
         print("Firebase Admin SDK successfully initialized.")
     except Exception as e:
         print(f"ERROR: Failed to initialize Firebase Admin SDK: {e}")
+
 
 # Helper to verify session login
 def is_logged_in():
