@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -18,10 +19,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <!-- Style -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <!-- Background particles -->
     <div id="petals-container" class="bg-particles"></div>
@@ -37,19 +41,22 @@
     <!-- Lily SVG Side Right -->
     <svg class="floral-decor floral-decor-side-right" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 70 Q52 90, 60 95" stroke="#a3b899" stroke-width="2.5" fill="none" />
-        <path d="M50 70 C40 50, 40 30, 50 20 C60 30, 60 50, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
-        <path d="M50 70 C30 60, 20 40, 35 30 C45 35, 45 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
-        <path d="M50 70 C70 60, 80 40, 65 30 C55 35, 55 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 70 C40 50, 40 30, 50 20 C60 30, 60 50, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1"
+            stroke-width="1.5" />
+        <path d="M50 70 C30 60, 20 40, 35 30 C45 35, 45 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1"
+            stroke-width="1.5" />
+        <path d="M50 70 C70 60, 80 40, 65 30 C55 35, 55 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1"
+            stroke-width="1.5" />
     </svg>
 
     <!-- Navigation Header -->
     <header class="navbar">
-        <div class="nav-brand">🌸 Your Cycle Magic</div>
+        <div class="nav-brand">🌸</div>
         <div class="nav-actions">
-            <!-- PWA Install Button - always visible -->
-            <button id="installBtn" class="install-btn" title="Install app on your device">
-                <span class="install-icon">⬇️</span> Install App
-            </button>
+            <!-- Direct Download Button -->
+            <a href="/download" class="install-btn" id="installBtn" download>
+                ⬇️ Download App
+            </a>
             <a href="/logout" class="logout-btn">Logout 🚪</a>
         </div>
     </header>
@@ -60,13 +67,14 @@
         <div id="loadingOverlay" class="loading-overlay">
             <div class="spinner-container">
                 <div class="spinner"></div>
-                <p>Loading your cycle magic... 🌸<br><small>If it's been idle, waking up the server takes a tiny moment! 💕</small></p>
+                <p>Loading your cycle magic... 🌸<br><small>If it's been idle, waking up the server takes a tiny moment!
+                        💕</small></p>
             </div>
         </div>
 
         <!-- Grid Layout -->
         <div class="dashboard-grid">
-            
+
             <!-- Left Column: Prediction + Phase visualizer -->
             <div class="left-col" style="display: flex; flex-direction: column; gap: 2rem;">
                 <!-- Predicted Period Card (Main prominent card) -->
@@ -93,7 +101,8 @@
                     <div class="phase-visualizer">
                         <svg class="phase-ring-svg" width="130" height="130">
                             <circle class="phase-ring-bg" cx="65" cy="65" r="55"></circle>
-                            <circle class="phase-ring-fill" id="phaseRingFill" cx="65" cy="65" r="55" stroke-dasharray="345.57" stroke-dashoffset="345.57"></circle>
+                            <circle class="phase-ring-fill" id="phaseRingFill" cx="65" cy="65" r="55"
+                                stroke-dasharray="345.57" stroke-dashoffset="345.57"></circle>
                         </svg>
                         <div class="phase-center-text">
                             <div id="phaseDayText" style="font-size: 1.1rem; font-weight: 700;">Day --</div>
@@ -144,18 +153,19 @@
                     <h3>Your Logs History</h3>
                     <button class="log-btn-custom" id="customLogBtn">Add Custom Log 📝</button>
                 </div>
-                
+
                 <div class="onboarding-message" id="onboardingMsg">
                     <div class="onboarding-icon">✨</div>
                     <h4>Welcome to your personal cycle tracker!</h4>
-                    <p>Log your first period to start calculating predictions, fertile windows, and more! Click the buttons above to log. 💕</p>
+                    <p>Log your first period to start calculating predictions, fertile windows, and more! Click the
+                        buttons above to log. 💕</p>
                 </div>
 
                 <div class="history-list" id="historyList">
                     <!-- Filled by JS -->
                 </div>
             </div>
-            
+
         </div>
     </main>
 
@@ -176,26 +186,37 @@
                 <div class="form-group">
                     <label>How is your mood? 💕</label>
                     <div class="mood-selector-container">
-                        <label class="mood-option"><input type="radio" name="mood" value="😊 Happy"> <span>😊 Happy</span></label>
-                        <label class="mood-option"><input type="radio" name="mood" value="🥺 Sensitive"> <span>🥺 Sensitive</span></label>
-                        <label class="mood-option"><input type="radio" name="mood" value="🥱 Tired"> <span>🥱 Tired</span></label>
-                        <label class="mood-option"><input type="radio" name="mood" value="⚡ Crampy"> <span>⚡ Crampy</span></label>
-                        <label class="mood-option"><input type="radio" name="mood" value="💖 Loved"> <span>💖 Loved</span></label>
+                        <label class="mood-option"><input type="radio" name="mood" value="😊 Happy"> <span>😊
+                                Happy</span></label>
+                        <label class="mood-option"><input type="radio" name="mood" value="🥺 Sensitive"> <span>🥺
+                                Sensitive</span></label>
+                        <label class="mood-option"><input type="radio" name="mood" value="🥱 Tired"> <span>🥱
+                                Tired</span></label>
+                        <label class="mood-option"><input type="radio" name="mood" value="⚡ Crampy"> <span>⚡
+                                Crampy</span></label>
+                        <label class="mood-option"><input type="radio" name="mood" value="💖 Loved"> <span>💖
+                                Loved</span></label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Symptoms logged today 🩺</label>
                     <div class="symptoms-selector-container">
-                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="⚡ Cramps"> <span>⚡ Cramps</span></label>
-                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🤕 Headache"> <span>🤕 Headache</span></label>
-                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🥱 Fatigue"> <span>🥱 Fatigue</span></label>
-                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🎈 Bloating"> <span>🎈 Bloating</span></label>
-                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🍫 Cravings"> <span>🍫 Cravings</span></label>
+                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="⚡ Cramps"> <span>⚡
+                                Cramps</span></label>
+                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🤕 Headache"> <span>🤕
+                                Headache</span></label>
+                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🥱 Fatigue"> <span>🥱
+                                Fatigue</span></label>
+                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🎈 Bloating"> <span>🎈
+                                Bloating</span></label>
+                        <label class="symptom-tag"><input type="checkbox" name="symptoms" value="🍫 Cravings"> <span>🍫
+                                Cravings</span></label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="logNotes">Notes 💌</label>
-                    <textarea id="logNotes" placeholder="How are you feeling? Write anything here... 🍫" rows="2"></textarea>
+                    <textarea id="logNotes" placeholder="How are you feeling? Write anything here... 🍫"
+                        rows="2"></textarea>
                 </div>
                 <button type="submit" class="submit-log-btn">Save Entry 💖</button>
             </form>
@@ -205,117 +226,16 @@
     <!-- Main JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <!-- Register Service Worker + PWA Install Button Logic -->
+    <!-- Register Service Worker for offline caching -->
     <script>
-        // ── Service Worker registration ────────────────────────────
-        // Must be registered from root /sw.js so its scope covers the full app
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js', { scope: '/' }).then((reg) => {
-                    console.log('SW registered with scope:', reg.scope);
-                }).catch((err) => {
-                    console.warn('SW registration failed:', err);
-                });
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.warn('SW failed:', err));
             });
-        }
-
-        // ── PWA Install Prompt ─────────────────────────────────────
-        let deferredPrompt = null;
-        const installBtn = document.getElementById('installBtn');
-
-        // Capture the browser's install prompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            // Show the button with a little entrance animation
-            installBtn.style.display = 'flex';
-            installBtn.classList.add('install-btn-animate');
-        });
-
-        // When user taps Install
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                // Use native browser prompt (Android / PC Chrome/Edge)
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            } else {
-                // iOS Safari fallback: show friendly tooltip
-                showInstallTooltip();
-            }
-        });
-
-        // Hide button once already installed as PWA
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-            deferredPrompt = null;
-        });
-
-        // On iOS, the button is always visible (no beforeinstallprompt)
-        // Detect iOS and show button anyway
-        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-        const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        if (isIOS && !isInStandaloneMode) {
-            installBtn.style.display = 'flex';
-        }
-
-        function showInstallTooltip() {
-            // Remove any existing tooltip
-            const existing = document.getElementById('installTooltip');
-            if (existing) existing.remove();
-
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-            let instructions = '';
-
-            if (isIOS) {
-                instructions = `
-                    <strong style="color:#d05370">Install on iPhone 📱</strong><br>
-                    Tap <strong>Share</strong> (⬆️ box-with-arrow icon), then<br>
-                    tap <strong>"Add to Home Screen"</strong> 🌸
-                `;
-            } else if (/android/i.test(navigator.userAgent)) {
-                instructions = `
-                    <strong style="color:#d05370">Install on Android 📱</strong><br>
-                    Tap the <strong>3-dot menu (⋮)</strong> in your browser,<br>
-                    then tap <strong>"Add to Home Screen"</strong> or<br>
-                    <strong>"Install App"</strong> 🌸
-                `;
-            } else {
-                instructions = `
-                    <strong style="color:#d05370">Install on your device 💻</strong><br>
-                    In <strong>Chrome/Edge</strong>: click the <strong>⬇ icon</strong> in the address bar<br>
-                    In <strong>Safari (Mac)</strong>: File menu → <strong>"Add to Dock"</strong> 🌸<br>
-                    In <strong>Firefox</strong>: use Chrome or Edge for best results
-                `;
-            }
-
-            const tooltip = document.createElement('div');
-            tooltip.id = 'installTooltip';
-            tooltip.style.cssText = `
-                position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-                background: rgba(255,255,255,0.97); border: 1.5px solid #ff8da1;
-                border-radius: 18px; padding: 1.1rem 1.5rem;
-                box-shadow: 0 8px 30px rgba(255,141,161,0.25);
-                font-family: 'Quicksand', sans-serif; font-size: 0.92rem;
-                color: #5d4a4d; z-index: 9999; text-align: center;
-                max-width: 340px; line-height: 1.7;
-                animation: fadeInUp 0.4s ease;
-            `;
-            tooltip.innerHTML = `
-                ${instructions}
-                <br>
-                <button onclick="document.getElementById('installTooltip').remove()" style="
-                    margin-top:0.6rem; background: #ff8da1; color: white; border: none;
-                    border-radius: 12px; padding: 0.4rem 1.2rem;
-                    font-family: inherit; font-weight: 700; cursor: pointer;
-                ">Got it! 💕</button>
-            `;
-            document.body.appendChild(tooltip);
-            setTimeout(() => tooltip?.remove(), 10000);
         }
     </script>
 </body>
+
 </html>
