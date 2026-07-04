@@ -133,7 +133,7 @@ body {
 
 /* Install Button */
 .install-btn {
-    display: none; /* shown via JS */
+    display: flex;
     align-items: center;
     gap: 0.4rem;
     font-family: var(--font-body);

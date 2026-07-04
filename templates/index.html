@@ -46,8 +46,8 @@
     <header class="navbar">
         <div class="nav-brand">🌸 Your Cycle Magic</div>
         <div class="nav-actions">
-            <!-- PWA Install Button (shown only when installable) -->
-            <button id="installBtn" class="install-btn" style="display:none;" title="Install app on your device">
+            <!-- PWA Install Button - always visible -->
+            <button id="installBtn" class="install-btn" title="Install app on your device">
                 <span class="install-icon">⬇️</span> Install App
             </button>
             <a href="/logout" class="logout-btn">Logout 🚪</a>
@@ -266,6 +266,31 @@
             const existing = document.getElementById('installTooltip');
             if (existing) existing.remove();
 
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            let instructions = '';
+
+            if (isIOS) {
+                instructions = `
+                    <strong style="color:#d05370">Install on iPhone 📱</strong><br>
+                    Tap <strong>Share</strong> (⬆️ box-with-arrow icon), then<br>
+                    tap <strong>"Add to Home Screen"</strong> 🌸
+                `;
+            } else if (/android/i.test(navigator.userAgent)) {
+                instructions = `
+                    <strong style="color:#d05370">Install on Android 📱</strong><br>
+                    Tap the <strong>3-dot menu (⋮)</strong> in your browser,<br>
+                    then tap <strong>"Add to Home Screen"</strong> or<br>
+                    <strong>"Install App"</strong> 🌸
+                `;
+            } else {
+                instructions = `
+                    <strong style="color:#d05370">Install on your device 💻</strong><br>
+                    In <strong>Chrome/Edge</strong>: click the <strong>⬇ icon</strong> in the address bar<br>
+                    In <strong>Safari (Mac)</strong>: File menu → <strong>"Add to Dock"</strong> 🌸<br>
+                    In <strong>Firefox</strong>: use Chrome or Edge for best results
+                `;
+            }
+
             const tooltip = document.createElement('div');
             tooltip.id = 'installTooltip';
             tooltip.style.cssText = `
@@ -275,22 +300,20 @@
                 box-shadow: 0 8px 30px rgba(255,141,161,0.25);
                 font-family: 'Quicksand', sans-serif; font-size: 0.92rem;
                 color: #5d4a4d; z-index: 9999; text-align: center;
-                max-width: 320px; line-height: 1.6;
+                max-width: 340px; line-height: 1.7;
                 animation: fadeInUp 0.4s ease;
             `;
             tooltip.innerHTML = `
-                <strong style="color:#d05370">Install on iPhone 📱</strong><br>
-                Tap <strong>Share</strong> (the box with arrow ↑), then<br>
-                <strong>"Add to Home Screen"</strong> 🌸
-                <br><br>
+                ${instructions}
+                <br>
                 <button onclick="document.getElementById('installTooltip').remove()" style="
-                    background: #ff8da1; color: white; border: none;
+                    margin-top:0.6rem; background: #ff8da1; color: white; border: none;
                     border-radius: 12px; padding: 0.4rem 1.2rem;
                     font-family: inherit; font-weight: 700; cursor: pointer;
                 ">Got it! 💕</button>
             `;
             document.body.appendChild(tooltip);
-            setTimeout(() => tooltip?.remove(), 8000);
+            setTimeout(() => tooltip?.remove(), 10000);
         }
     </script>
 </body>
