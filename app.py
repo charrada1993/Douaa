@@ -65,8 +65,8 @@ if firebase_creds_env and db_url:
             # json.loads should give us real \n chars, but some envs deliver
             # the literal two-char sequence  \  n  instead.
             pk = creds_dict.get("private_key", "")
-            if "\\n" in pk and "\n" not in pk:
-                creds_dict["private_key"] = pk.replace("\\n", "\n")
+            pk = pk.replace("\\n", "\n").replace("\\\\n", "\n")
+            creds_dict["private_key"] = pk
 
             cred = credentials.Certificate(creds_dict)
         else:
@@ -132,6 +132,8 @@ def log_period():
         start_date = data.get("start_date")
         end_date = data.get("end_date") or None
         notes = data.get("notes", "")
+        mood = data.get("mood", "")
+        symptoms = data.get("symptoms", [])
         
         if not start_date:
             return jsonify({"error": "Start date is required."}), 400
@@ -143,6 +145,8 @@ def log_period():
             "start_date": start_date,
             "end_date": end_date,
             "notes": notes,
+            "mood": mood,
+            "symptoms": symptoms,
             "timestamp": datetime.utcnow().isoformat()
         })
         
