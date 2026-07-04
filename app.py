@@ -27,7 +27,43 @@ if firebase_creds_env and db_url:
     try:
         # Check if the env var contains a JSON string
         if firebase_creds_env.strip().startswith("{"):
-            creds_dict = json.loads(firebase_creds_env)
+            try:
+                creds_dict = json.loads(firebase_creds_env)
+            except Exception as json_err:
+                print(f"Warning: Standard JSON load failed ({json_err}). Attempting sanitization and regex extraction fallback...")
+                try:
+                    # Clean up: replace literal newlines with escaped newlines
+                    sanitized = firebase_creds_env.replace('\n', '\\n').replace('\r', '')
+                    if sanitized.startswith('{\\n'):
+                        sanitized = '{' + sanitized[3:]
+                    if sanitized.endswith('\\n}'):
+                        sanitized = sanitized[:-3] + '}'
+                    creds_dict = json.loads(sanitized)
+                except Exception:
+                    # Bulletproof fallback: manually parse key fields using regex
+                    import re
+                    creds_dict = {}
+                    # Essential fields needed by credentials.Certificate
+                    fields = [
+                        "type", "project_id", "private_key_id", "private_key", 
+                        "client_email", "client_id", "auth_uri", "token_uri", 
+                        "auth_provider_x509_cert_url", "client_x509_cert_url", "universe_domain"
+                    ]
+                    for field in fields:
+                        # Match double-quoted key and value
+                        # We use ([^"]*?)(?<!\\) to handle escaped characters like \" inside values if any,
+                        # but for service accounts it's simple.
+                        match = re.search(f'"{field}"\s*:\s*"([^"]+)"', firebase_creds_env)
+                        if match:
+                            val = match.group(1)
+                            if field == "private_key":
+                                # Convert escaped \n back to actual newlines
+                                val = val.replace('\\n', '\n').replace('\\\\n', '\n')
+                            creds_dict[field] = val
+                    
+                    if not creds_dict.get("private_key") or not creds_dict.get("project_id"):
+                        raise ValueError("Failed to extract critical fields (private_key/project_id) from credentials environment variable.")
+            
             cred = credentials.Certificate(creds_dict)
         else:
             # Otherwise, treat it as a path to the credentials JSON file
