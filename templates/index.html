@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cycle Magic 🌸</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Background particles -->
+    <div id="petals-container" class="bg-particles"></div>
+
+    <!-- Rose SVG Side Left -->
+    <svg class="floral-decor floral-decor-side-left" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 30 C40 20, 20 40, 50 70 C80 40, 60 20, 50 30 Z" fill="#ffb3c1" />
+        <path d="M50 38 C45 30, 30 45, 50 65 C70 45, 55 30, 50 38 Z" fill="#ff8da1" />
+        <path d="M50 70 Q50 90, 45 95" stroke="#a3b899" stroke-width="3" fill="none" />
+        <path d="M50 78 Q35 75, 38 68 Q43 72, 50 78 Z" fill="#a3b899" />
+    </svg>
+
+    <!-- Lily SVG Side Right -->
+    <svg class="floral-decor floral-decor-side-right" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 70 Q52 90, 60 95" stroke="#a3b899" stroke-width="2.5" fill="none" />
+        <path d="M50 70 C40 50, 40 30, 50 20 C60 30, 60 50, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 70 C30 60, 20 40, 35 30 C45 35, 45 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 70 C70 60, 80 40, 65 30 C55 35, 55 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+    </svg>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand">🌸 Your Cycle Magic</div>
+        <a href="/logout" class="logout-btn">Logout 🚪</a>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-container">
+        <!-- Loading State Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <p>Loading your cycle magic... 🌸<br><small>If it's been idle, waking up the server takes a tiny moment! 💕</small></p>
+            </div>
+        </div>
+
+        <!-- Grid Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Predicted Period Card (Main prominent card) -->
+            <div class="card prediction-card glow-card animate-pulse-card">
+                <div class="heart-pulse-icon">💗</div>
+                <h3>Expected Next Cycle</h3>
+                <div class="prediction-date" id="predictedDate">--</div>
+                <div class="days-remaining" id="daysRemaining">No logs yet, darling!</div>
+                <div class="sub-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Average Cycle</span>
+                        <span class="stat-val" id="avgCycleLen">-- days</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Fertile Window</span>
+                        <span class="stat-val" id="fertileWindow">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action & Mini Calendar -->
+            <div class="card calendar-card">
+                <div class="card-header">
+                    <h3>Cycle Calendar</h3>
+                    <button class="log-btn-today" id="quickLogBtn">Log Today! 🌸</button>
+                </div>
+                <!-- Mini Calendar Calendar Grid -->
+                <div class="calendar-wrapper">
+                    <div class="calendar-controls">
+                        <button id="prevMonth" class="cal-control">‹</button>
+                        <span id="calendarMonthYear" class="calendar-title"></span>
+                        <button id="nextMonth" class="cal-control">›</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="day-name">Su</div>
+                        <div class="day-name">Mo</div>
+                        <div class="day-name">Tu</div>
+                        <div class="day-name">We</div>
+                        <div class="day-name">Th</div>
+                        <div class="day-name">Fr</div>
+                        <div class="day-name">Sa</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays">
+                        <!-- Filled by JS -->
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-dot logged"></span> Logged Period</div>
+                        <div class="legend-item"><span class="legend-dot predicted"></span> Predicted Period</div>
+                        <div class="legend-item"><span class="legend-dot fertile"></span> Fertile Window</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cycle Log History -->
+            <div class="card history-card full-width">
+                <div class="card-header">
+                    <h3>Your Logs History</h3>
+                    <button class="log-btn-custom" id="customLogBtn">Add Custom Log 📝</button>
+                </div>
+                
+                <div class="onboarding-message" id="onboardingMsg">
+                    <div class="onboarding-icon">✨</div>
+                    <h4>Welcome to your personal cycle tracker!</h4>
+                    <p>Log your first period to start calculating predictions, fertile windows, and more! Click the buttons above to log. 💕</p>
+                </div>
+
+                <div class="history-list" id="historyList">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Modal for Logging Period -->
+    <div id="logModal" class="modal">
+        <div class="modal-content animate-fade-in">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="modal-title">Log Period Entry 💕</h2>
+            <form id="logPeriodForm" class="log-form">
+                <div class="form-group">
+                    <label for="startDate">Start Date 📅</label>
+                    <input type="date" id="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date (Optional) 📅</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="form-group">
+                    <label for="logNotes">Notes 💌</label>
+                    <textarea id="logNotes" placeholder="How are you feeling? Crampy? Happy? Chocolate cravings? 🍫" rows="3"></textarea>
+                </div>
+                <button type="submit" class="submit-log-btn">Save Entry 💖</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

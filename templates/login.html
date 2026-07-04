@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, My Love 💕</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Main Style (shared variables) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(253, 164, 186, 0.25);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            transform: translateY(0);
+            animation: floatUp 0.8s ease-out;
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart-icon {
+            font-size: 3.5rem;
+            color: var(--primary-pink);
+            animation: pulse 1.5s infinite;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--dark-pink);
+            font-size: 2.8rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .passcode-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .passcode-input {
+            width: 100%;
+            max-width: 240px;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid var(--border-pink);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 0.3rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: bold;
+            color: var(--dark-pink);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .passcode-input:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 10px rgba(253, 164, 186, 0.4);
+            transform: scale(1.02);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-pink), var(--soft-rose));
+            color: white;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(253, 164, 186, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(253, 164, 186, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e05275;
+            font-size: 0.9rem;
+            min-height: 20px;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Petals Background Container -->
+    <div id="petals-container" class="bg-particles"></div>
+
+    <!-- Rose SVG Top Left -->
+    <svg class="floral-decor floral-decor-top-left" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 30 C40 20, 20 40, 50 70 C80 40, 60 20, 50 30 Z" fill="#ffb3c1" />
+        <path d="M50 38 C45 30, 30 45, 50 65 C70 45, 55 30, 50 38 Z" fill="#ff8da1" />
+        <path d="M50 70 Q50 90, 45 95" stroke="#a3b899" stroke-width="3" fill="none" />
+        <path d="M50 78 Q35 75, 38 68 Q43 72, 50 78 Z" fill="#a3b899" />
+        <path d="M50 85 Q65 82, 62 75 Q57 79, 50 85 Z" fill="#a3b899" />
+    </svg>
+
+    <!-- Lily SVG Bottom Right -->
+    <svg class="floral-decor floral-decor-bottom-right" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 70 Q52 90, 60 95" stroke="#a3b899" stroke-width="2.5" fill="none" />
+        <path d="M51 80 Q35 85, 30 75 Q42 75, 51 80 Z" fill="#a3b899" />
+        <path d="M50 70 C40 50, 40 30, 50 20 C60 30, 60 50, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 70 C30 60, 20 40, 35 30 C45 35, 45 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 70 C70 60, 80 40, 65 30 C55 35, 55 55, 50 70 Z" fill="#fff0f3" stroke="#ffb6c1" stroke-width="1.5" />
+        <path d="M50 50 Q48 40, 45 38" stroke="#e5b887" stroke-width="1.5" fill="none" />
+        <circle cx="45" cy="37" r="2.5" fill="#e5b887" />
+        <path d="M50 50 Q52 40, 55 38" stroke="#e5b887" stroke-width="1.5" fill="none" />
+        <circle cx="55" cy="37" r="2.5" fill="#e5b887" />
+    </svg>
+
+    <div class="login-container">
+        <div class="heart-icon">💕</div>
+        <h1>Hello Beautiful</h1>
+        <p>Enter our passcode to see your cycle magic 🌸</p>
+        
+        <form class="passcode-form" id="loginForm">
+            <input type="password" class="passcode-input" id="passcode" autocomplete="off" placeholder="••••" maxlength="8" required autofocus>
+            <button type="submit" class="submit-btn">Unlock 💗</button>
+        </form>
+        <div class="error-message" id="errorMsg"></div>
+    </div>
+
+    <!-- Background Petal Generator script -->
+    <script>
+        // Simple background petal generator
+        const container = document.getElementById('petals-container');
+        const colors = ['#ffd1dc', '#ffb6c1', '#ffc0cb', '#ffe4e1'];
+        
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.style.position = 'absolute';
+            petal.style.width = Math.random() * 15 + 10 + 'px';
+            petal.style.height = Math.random() * 15 + 10 + 'px';
+            petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            petal.style.borderRadius = '50% 0 50% 50%';
+            petal.style.opacity = Math.random() * 0.6 + 0.3;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.top = '-20px';
+            
+            const duration = Math.random() * 6 + 6;
+            petal.style.transition = `transform ${duration}s linear, top ${duration}s linear`;
+            
+            container.appendChild(petal);
+            
+            // Trigger animation
+            setTimeout(() => {
+                petal.style.top = '105vh';
+                petal.style.transform = `translateX(${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg)`;
+            }, 50);
+            
+            // Clean up
+            setTimeout(() => {
+                petal.remove();
+            }, duration * 1000);
+        }
+        
+        // Spawn interval
+        setInterval(createPetal, 400);
+
+        // Form submission code
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const passcode = document.getElementById('passcode').value;
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = "";
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    window.location.href = '/';
+                } else {
+                    errorMsg.textContent = data.message || "Incorrect passcode, sweetie! 💕";
+                }
+            } catch (err) {
+                errorMsg.textContent = "Something went wrong. Let's try again! 🌸";
+            }
+        });
+    </script>
+</body>
+</html>
