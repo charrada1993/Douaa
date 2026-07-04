@@ -104,40 +104,17 @@ def manifest():
     from flask import send_from_directory
     return send_from_directory("static", "manifest.json", mimetype="application/manifest+json")
 
-# Smart download route — detects device and serves the right file
+# Download route — serves Windows desktop shortcut
 @app.route("/download")
 def download_app():
-    from flask import send_from_directory, Response
-    user_agent = request.headers.get("User-Agent", "").lower()
-
-    if "windows" in user_agent:
-        # Serve Windows internet shortcut (.url file)
-        return send_from_directory(
-            "static/download",
-            "YourCycleMagic.url",
-            as_attachment=True,
-            download_name="YourCycleMagic.url",
-            mimetype="application/octet-stream"
-        )
-    elif "android" in user_agent:
-        # Redirect to PWABuilder-generated APK download page
-        return redirect("https://www.pwabuilder.com/reportcard?site=https://douaa.onrender.com", 302)
-    elif "iphone" in user_agent or "ipad" in user_agent or "mac os" in user_agent:
-        # iOS/macOS — no direct download possible
-        return Response(
-            "<script>window.history.back();</script>"
-            "<meta charset='utf-8'><p>On iPhone: Open in Safari → tap Share → Add to Home Screen 🌸</p>",
-            mimetype="text/html"
-        )
-    else:
-        # Fallback — serve the Windows shortcut
-        return send_from_directory(
-            "static/download",
-            "YourCycleMagic.url",
-            as_attachment=True,
-            download_name="YourCycleMagic.url",
-            mimetype="application/octet-stream"
-        )
+    from flask import send_from_directory
+    return send_from_directory(
+        "static/download",
+        "YourCycleMagic.url",
+        as_attachment=True,
+        download_name="YourCycleMagic.url",
+        mimetype="application/octet-stream"
+    )
 
 @app.route("/")
 def index():

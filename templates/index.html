@@ -53,10 +53,10 @@
     <header class="navbar">
         <div class="nav-brand">🌸</div>
         <div class="nav-actions">
-            <!-- Direct Download Button -->
-            <a href="/download" class="install-btn" id="installBtn" download>
+            <!-- Smart Download/Install Button -->
+            <button id="installBtn" class="install-btn" onclick="handleInstall()">
                 ⬇️ Download App
-            </a>
+            </button>
             <a href="/logout" class="logout-btn">Logout 🚪</a>
         </div>
     </header>
@@ -226,16 +226,122 @@
     <!-- Main JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <!-- Register Service Worker for offline caching -->
+    <!-- Service Worker + Smart Install Logic -->
     <script>
+        // Register SW for offline caching
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                    .then(reg => console.log('SW registered:', reg.scope))
-                    .catch(err => console.warn('SW failed:', err));
+                    .then(reg => console.log('SW scope:', reg.scope))
+                    .catch(err => console.warn('SW error:', err));
             });
         }
+
+        // Capture Android/PC install prompt as early as possible
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('Install prompt ready!');
+        });
+
+        // Hide button if already installed as standalone app
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('installBtn').style.display = 'none';
+        });
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            document.getElementById('installBtn').style.display = 'none';
+        }
+
+        async function handleInstall() {
+            const ua = navigator.userAgent.toLowerCase();
+            const isAndroid = /android/.test(ua);
+            const isIOS = /iphone|ipad|ipod/.test(ua);
+            const isWindows = /windows/.test(ua);
+
+            if (deferredPrompt) {
+                // ✅ Android/PC Chrome: One-tap native install — no redirects!
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installBtn').style.display = 'none';
+                }
+                deferredPrompt = null;
+
+            } else if (isWindows) {
+                // ✅ Windows: Download desktop shortcut file directly
+                const a = document.createElement('a');
+                a.href = '/download';
+                a.download = 'YourCycleMagic.url';
+                a.click();
+
+            } else if (isAndroid) {
+                // Android but prompt not ready yet — show Chrome tip
+                showModal(
+                    '📱 Install on Android',
+                    `Open this page in <strong>Chrome</strong>, then:<br><br>
+                    1️⃣ Tap the <strong>3-dot menu (⋮)</strong> at the top right<br>
+                    2️⃣ Tap <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong><br>
+                    3️⃣ Tap <strong>Install</strong> 🌸<br><br>
+                    <small>Tip: Make sure you're using Chrome, not another browser.</small>`
+                );
+
+            } else if (isIOS) {
+                // iPhone: Guide
+                showModal(
+                    '📱 Install on iPhone',
+                    `1️⃣ Open this page in <strong>Safari</strong><br>
+                    2️⃣ Tap the <strong>Share button</strong> (⬆️ square with arrow)<br>
+                    3️⃣ Tap <strong>"Add to Home Screen"</strong><br>
+                    4️⃣ Tap <strong>Add</strong> 🌸`
+                );
+
+            } else {
+                // Generic fallback
+                window.location.href = '/download';
+            }
+        }
+
+        function showModal(title, body) {
+            const existing = document.getElementById('installModal');
+            if (existing) existing.remove();
+            const overlay = document.createElement('div');
+            overlay.id = 'installModal';
+            overlay.style.cssText = `
+                position:fixed; inset:0; background:rgba(90,40,60,0.45);
+                z-index:9999; display:flex; align-items:center; justify-content:center;
+                animation: fadeIn 0.25s ease;
+            `;
+            overlay.innerHTML = `
+                <div style="
+                    background:#fff8fa; border-radius:24px; padding:2rem 1.8rem;
+                    max-width:340px; width:90%; text-align:center;
+                    box-shadow:0 16px 50px rgba(255,100,140,0.25);
+                    font-family:'Quicksand',sans-serif; color:#5d3a45;
+                    animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+                ">
+                    <div style="font-size:2rem; margin-bottom:0.5rem">🌸</div>
+                    <h3 style="margin:0 0 1rem; color:#d05370; font-size:1.15rem">${title}</h3>
+                    <p style="line-height:1.8; font-size:0.95rem; margin:0 0 1.4rem">${body}</p>
+                    <button onclick="document.getElementById('installModal').remove()" style="
+                        background:linear-gradient(135deg,#ff8da1,#e5b887); color:white;
+                        border:none; border-radius:16px; padding:0.65rem 2rem;
+                        font-family:inherit; font-weight:700; font-size:1rem; cursor:pointer;
+                        box-shadow:0 4px 14px rgba(255,141,161,0.4);
+                    ">Got it! 💕</button>
+                </div>
+            `;
+            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+            document.body.appendChild(overlay);
+        }
+
+        // Pop-in keyframe for modal
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+            @keyframes popIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
-
 </html>
