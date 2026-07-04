@@ -124,6 +124,57 @@ body {
     box-shadow: 0 4px 10px rgba(253, 164, 186, 0.2);
 }
 
+/* Nav Actions Group */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Install Button */
+.install-btn {
+    display: none; /* shown via JS */
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #ff8da1, #e5b887);
+    border: none;
+    padding: 0.55rem 1.2rem;
+    border-radius: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255, 141, 161, 0.35);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.install-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 141, 161, 0.5);
+    filter: brightness(1.05);
+}
+
+.install-btn:active {
+    transform: translateY(0);
+}
+
+.install-btn-animate {
+    animation: installPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes installPop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    80%  { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* Dashboard Container */
 .dashboard-container {
     max-width: 1050px;

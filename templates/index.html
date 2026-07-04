@@ -45,7 +45,13 @@
     <!-- Navigation Header -->
     <header class="navbar">
         <div class="nav-brand">🌸 Your Cycle Magic</div>
-        <a href="/logout" class="logout-btn">Logout 🚪</a>
+        <div class="nav-actions">
+            <!-- PWA Install Button (shown only when installable) -->
+            <button id="installBtn" class="install-btn" style="display:none;" title="Install app on your device">
+                <span class="install-icon">⬇️</span> Install App
+            </button>
+            <a href="/logout" class="logout-btn">Logout 🚪</a>
+        </div>
     </header>
 
     <!-- Main Container -->
@@ -199,8 +205,9 @@
     <!-- Main JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <!-- Register Service Worker for PWA -->
+    <!-- Register Service Worker + PWA Install Button Logic -->
     <script>
+        // ── Service Worker registration ────────────────────────────
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/static/sw.js').then((reg) => {
@@ -209,6 +216,81 @@
                     console.warn('SW registration failed:', err);
                 });
             });
+        }
+
+        // ── PWA Install Prompt ─────────────────────────────────────
+        let deferredPrompt = null;
+        const installBtn = document.getElementById('installBtn');
+
+        // Capture the browser's install prompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show the button with a little entrance animation
+            installBtn.style.display = 'flex';
+            installBtn.classList.add('install-btn-animate');
+        });
+
+        // When user taps Install
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Use native browser prompt (Android / PC Chrome/Edge)
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            } else {
+                // iOS Safari fallback: show friendly tooltip
+                showInstallTooltip();
+            }
+        });
+
+        // Hide button once already installed as PWA
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt = null;
+        });
+
+        // On iOS, the button is always visible (no beforeinstallprompt)
+        // Detect iOS and show button anyway
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (isIOS && !isInStandaloneMode) {
+            installBtn.style.display = 'flex';
+        }
+
+        function showInstallTooltip() {
+            // Remove any existing tooltip
+            const existing = document.getElementById('installTooltip');
+            if (existing) existing.remove();
+
+            const tooltip = document.createElement('div');
+            tooltip.id = 'installTooltip';
+            tooltip.style.cssText = `
+                position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+                background: rgba(255,255,255,0.97); border: 1.5px solid #ff8da1;
+                border-radius: 18px; padding: 1.1rem 1.5rem;
+                box-shadow: 0 8px 30px rgba(255,141,161,0.25);
+                font-family: 'Quicksand', sans-serif; font-size: 0.92rem;
+                color: #5d4a4d; z-index: 9999; text-align: center;
+                max-width: 320px; line-height: 1.6;
+                animation: fadeInUp 0.4s ease;
+            `;
+            tooltip.innerHTML = `
+                <strong style="color:#d05370">Install on iPhone 📱</strong><br>
+                Tap <strong>Share</strong> (the box with arrow ↑), then<br>
+                <strong>"Add to Home Screen"</strong> 🌸
+                <br><br>
+                <button onclick="document.getElementById('installTooltip').remove()" style="
+                    background: #ff8da1; color: white; border: none;
+                    border-radius: 12px; padding: 0.4rem 1.2rem;
+                    font-family: inherit; font-weight: 700; cursor: pointer;
+                ">Got it! 💕</button>
+            `;
+            document.body.appendChild(tooltip);
+            setTimeout(() => tooltip?.remove(), 8000);
         }
     </script>
 </body>
