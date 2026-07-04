@@ -626,7 +626,203 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Responsive design */
+/* Mood Selector Styling */
+.mood-selector-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+}
+
+.mood-option {
+    cursor: pointer;
+    flex: 1;
+    min-width: 65px;
+    text-align: center;
+}
+
+.mood-option input {
+    display: none;
+}
+
+.mood-option span {
+    display: block;
+    padding: 0.6rem 0.3rem;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid var(--border-pink);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.mood-option input:checked + span {
+    background: var(--light-pink);
+    border-color: var(--primary-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(253, 164, 186, 0.2);
+}
+
+/* Symptom Tags Styling */
+.symptoms-selector-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+}
+
+.symptom-tag {
+    cursor: pointer;
+}
+
+.symptom-tag input {
+    display: none;
+}
+
+.symptom-tag span {
+    display: inline-block;
+    padding: 0.5rem 0.9rem;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid var(--border-pink);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.symptom-tag input:checked + span {
+    background: var(--primary-pink);
+    border-color: var(--primary-pink);
+    color: white;
+    box-shadow: 0 4px 10px rgba(253, 164, 186, 0.2);
+}
+
+/* Cycle Phase Visualizer Card */
+.phase-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 245, 247, 0.95) 100%);
+}
+
+.phase-visualizer {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 1.2rem;
+}
+
+.phase-ring-svg {
+    transform: rotate(-90deg);
+}
+
+.phase-ring-bg {
+    fill: none;
+    stroke: var(--light-pink);
+    stroke-width: 8;
+}
+
+.phase-ring-fill {
+    fill: none;
+    stroke: var(--primary-pink);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.phase-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.phase-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-pink);
+    margin-bottom: 0.5rem;
+}
+
+.phase-love-note {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 182, 193, 0.3);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    max-width: 90%;
+    margin: 0.5rem auto 0;
+    box-shadow: 0 4px 12px rgba(253, 164, 186, 0.05);
+    position: relative;
+}
+
+.phase-love-note::before {
+    content: '💌 ';
+}
+
+/* History Item Badges and Mood Icons */
+.history-item-mood {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+.history-item-symptoms {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+}
+
+.symptom-badge {
+    background: rgba(93, 74, 77, 0.06);
+    color: var(--text-color);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+/* Glow effects on hover */
+.glow-card {
+    position: relative;
+}
+
+.glow-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 24px;
+    box-shadow: 0 0 20px rgba(255, 141, 161, 0.35);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.glow-card:hover::after {
+    opacity: 1;
+}
+
+/* Soft gold accent border for today */
+.calendar-day.today {
+    box-shadow: 0 0 0 2.5px white, 0 0 0 4.5px var(--gold-accent);
+}
+
+/* Responsive design adjustments */
 @media (max-width: 768px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
@@ -635,3 +831,4 @@ body {
         grid-column: span 1;
     }
 }
+
