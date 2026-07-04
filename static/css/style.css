@@ -824,11 +824,152 @@ body {
 
 /* Responsive design adjustments */
 @media (max-width: 768px) {
+    .navbar {
+        padding: 0.8rem 1.2rem;
+    }
+
+    .nav-brand {
+        font-size: 1.6rem;
+    }
+
+    .logout-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 12px;
+    }
+
+    .dashboard-container {
+        margin: 1.2rem auto;
+        padding: 0 0.8rem;
+    }
+
     .dashboard-grid {
         grid-template-columns: 1fr;
+        gap: 1.2rem;
     }
-    .full-width {
-        grid-column: span 1;
+
+    .left-col {
+        gap: 1.2rem !important;
+    }
+
+    .card {
+        padding: 1.4rem;
+        border-radius: 20px;
+    }
+
+    .card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .prediction-date {
+        font-size: 1.8rem;
+    }
+
+    .days-remaining {
+        font-size: 0.95rem;
+        padding: 0.4rem 1.2rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Adjust calendar sizing on mobile */
+    .calendar-day {
+        font-size: 0.8rem;
+    }
+
+    .day-name {
+        font-size: 0.75rem;
+    }
+
+    .legend {
+        gap: 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    /* Modal adjustments on mobile */
+    .modal-content {
+        padding: 1.5rem 1.2rem;
+        width: 95%;
+        max-width: 95%;
+        border-radius: 20px;
+        margin: 10px;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .mood-selector-container {
+        gap: 0.35rem;
+    }
+
+    .mood-option span {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.2rem;
+    }
+
+    .symptom-tag span {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+    }
+
+    .form-group label {
+        font-size: 0.8rem;
+    }
+
+    .form-group input, .form-group textarea {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .submit-log-btn {
+        padding: 0.7rem;
+        font-size: 1rem;
+    }
+
+    /* Floral decorative elements styling for small screens */
+    .floral-decor-top-left {
+        width: 100px;
+        height: 100px;
+    }
+
+    .floral-decor-bottom-right {
+        width: 120px;
+        height: 120px;
+    }
+
+    .floral-decor-side-left, .floral-decor-side-right {
+        display: none; /* Hide side assets on mobile to avoid overcrowding */
+    }
+
+    /* History List styling */
+    .history-item {
+        padding: 0.8rem 1rem;
+    }
+
+    .history-dates {
+        font-size: 0.9rem;
+    }
+
+    .history-cycle-badge {
+        font-size: 0.75rem;
     }
 }
+
+@media (max-width: 480px) {
+    .nav-brand {
+        font-size: 1.4rem;
+    }
+    
+    .mood-selector-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .mood-option {
+        min-width: unset;
+    }
+}
+
 
