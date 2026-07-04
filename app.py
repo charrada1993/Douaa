@@ -31,6 +31,10 @@ if firebase_creds_env and db_url:
             cred = credentials.Certificate(creds_dict)
         else:
             # Otherwise, treat it as a path to the credentials JSON file
+            # Resolve relative path to make it absolute based on app's directory
+            if not os.path.isabs(firebase_creds_env):
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                firebase_creds_env = os.path.join(base_dir, firebase_creds_env)
             cred = credentials.Certificate(firebase_creds_env)
             
         firebase_admin.initialize_app(cred, {
