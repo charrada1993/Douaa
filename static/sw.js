@@ -1,14 +1,14 @@
 // Service Worker for Your Cycle Magic 🌸 PWA
-const CACHE_NAME = 'cycle-magic-v1';
+// Registered at /sw.js so scope covers the full app "/"
+const CACHE_NAME = 'cycle-magic-v2';
 const STATIC_ASSETS = [
     '/',
     '/static/css/style.css',
     '/static/js/main.js',
-    '/static/manifest.json',
+    '/manifest.json',
     '/static/images/logo.png',
     '/static/images/icons/icon-192x192.png',
-    '/static/images/icons/icon-512x512.png',
-    'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;700&display=swap'
+    '/static/images/icons/icon-512x512.png'
 ];
 
 // Install event - cache static assets
@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(STATIC_ASSETS);
         }).catch((err) => {
-            console.warn('Service worker cache install failed:', err);
+            console.warn('Cache install failed (some assets may not be cached):', err);
         })
     );
     self.skipWaiting();
@@ -39,14 +39,14 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache for pages; cache first for static assets
+// Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
-    // Skip non-GET requests and API calls (always go to network)
+    // Skip non-GET requests and API calls (always network)
     if (event.request.method !== 'GET') return;
     if (url.pathname.startsWith('/api/')) return;
-    if (url.pathname === '/login' || url.pathname === '/logout') return;
+    if (url.pathname === '/logout') return;
 
     // For static assets: cache first
     if (url.pathname.startsWith('/static/')) {

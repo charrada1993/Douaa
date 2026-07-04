@@ -11,7 +11,7 @@
     <meta name="description" content="Your personal cycle tracking magic 🌸">
     <title>Your Cycle Magic 🌸</title>
     <!-- PWA -->
-    <link rel="manifest" href="/static/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/static/images/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/images/icons/favicon-16x16.png">
@@ -208,10 +208,11 @@
     <!-- Register Service Worker + PWA Install Button Logic -->
     <script>
         // ── Service Worker registration ────────────────────────────
+        // Must be registered from root /sw.js so its scope covers the full app
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/static/sw.js').then((reg) => {
-                    console.log('SW registered:', reg.scope);
+                navigator.serviceWorker.register('/sw.js', { scope: '/' }).then((reg) => {
+                    console.log('SW registered with scope:', reg.scope);
                 }).catch((err) => {
                     console.warn('SW registration failed:', err);
                 });

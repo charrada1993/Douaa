@@ -89,6 +89,21 @@ if firebase_creds_env and db_url:
 def is_logged_in():
     return session.get("authenticated") is True
 
+# Serve Service Worker from root so it controls the full "/" scope
+@app.route("/sw.js")
+def service_worker():
+    from flask import send_from_directory
+    response = send_from_directory("static", "sw.js", mimetype="application/javascript")
+    response.headers["Service-Worker-Allowed"] = "/"
+    response.headers["Cache-Control"] = "no-cache"
+    return response
+
+# Serve manifest from root (some browsers require this)
+@app.route("/manifest.json")
+def manifest():
+    from flask import send_from_directory
+    return send_from_directory("static", "manifest.json", mimetype="application/manifest+json")
+
 @app.route("/")
 def index():
     if not is_logged_in():

@@ -11,7 +11,7 @@
     <meta name="description" content="A personal, romantic cycle tracking app made with love 💕">
     <title>Welcome, My Love 💕</title>
     <!-- PWA -->
-    <link rel="manifest" href="/static/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/static/images/icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/images/icons/favicon-16x16.png">
@@ -238,10 +238,10 @@
             }
         });
 
-        // Register Service Worker for PWA
+        // Register Service Worker from root so it controls the full app
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/static/sw.js').then((reg) => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' }).then((reg) => {
                     console.log('Service worker registered:', reg.scope);
                 }).catch((err) => {
                     console.warn('Service worker registration failed:', err);
